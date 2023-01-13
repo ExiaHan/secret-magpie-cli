@@ -55,6 +55,7 @@ if __name__ == "__main__":
         cleanup=cleanup,
         threshold_date=threshold_date,
         validate_https=not args.dont_validate_https,
+        max_branch_count=args.max_branch_count,
     )
     pool = ThreadPool(args.parallel_repos)
     results = pool.imap_unordered(f, repos)

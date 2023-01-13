@@ -32,11 +32,9 @@ def onerror(func, path, exc_info):
 def get_branches(path, threshold_date=None, single_branch=False):
     r = GitRepo.init(path)
 
-    branches = []
+    branches = ["HEAD"]
 
-    if single_branch:
-        branches = ["HEAD"]
-    else:
+    if not single_branch:
         if len(r.remotes) > 0:
             branches.extend(
                 [
@@ -91,6 +89,7 @@ def process_repo(
     cleanup=True,
     threshold_date=None,
     validate_https=True,
+    max_branch_count=50,
 ):
     out = []
     try:
@@ -101,6 +100,12 @@ def process_repo(
     branches = get_branches(
         path, threshold_date=threshold_date, single_branch=single_branch
     )
+
+    if len(branches) > max_branch_count:
+        print(
+            f"Repo '{repo.name}' has {len(branches)} branches, only scanning first {max_branch_count}. You can increase this limit\r\n"
+        )
+        branches = branches[0 : max_branch_count - 1]
 
     for branch in branches:
         for function in functions:
