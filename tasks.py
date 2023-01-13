@@ -29,10 +29,15 @@ def onerror(func, path, exc_info):
         raise
 
 
-def get_branches(path, threshold_date=None, single_branch=False):
+def get_branches(
+    path, max_branch_count, repo_name, threshold_date=None, single_branch=False
+):
     r = GitRepo.init(path)
 
-    branches = ["HEAD"]
+    branches = []
+
+    if single_branch:
+        branches = ["HEAD"]
 
     if not single_branch:
         if len(r.remotes) > 0:
@@ -51,16 +56,23 @@ def get_branches(path, threshold_date=None, single_branch=False):
                 if head.is_detached == True and not head.is_remote()
             ]
         )
-    if threshold_date != None:
-        all_branches = branches
-        branches = []
-        for branch in all_branches:
+    if threshold_date != None or len(branches) > max_branch_count:
+        branches_t = []
+        for branch in branches:
             try:
                 latest_commit = r.commit(branch)
-                if latest_commit.committed_date >= threshold_date:
-                    branches.append(branch)
+                branches_t.append((branch, latest_commit.committed_date))
             except:  # nosec B112
                 continue  # skip this branch
+        if threshold_date != None:
+            branches_t = [(b, v) for b, v in branches_t if v >= threshold_date]
+        if len(branches) > max_branch_count:
+            print(
+                f"Repo '{repo_name}' has {len(branches)} branches, only scanning the freshest {max_branch_count}. You can increase this limit"
+            )
+            branches_t.sort(key=lambda t: t[1], reverse=True)
+            branches_t = branches_t[0:max_branch_count]
+        branches = [b for b, v in branches_t]
 
     return branches
 
@@ -98,14 +110,12 @@ def process_repo(
         return [ProcessRepoResult(repo, "FAIL", "Could not clone")]
 
     branches = get_branches(
-        path, threshold_date=threshold_date, single_branch=single_branch
+        path,
+        threshold_date=threshold_date,
+        single_branch=single_branch,
+        max_branch_count=max_branch_count,
+        repo_name=repo.name,
     )
-
-    if len(branches) > max_branch_count:
-        print(
-            f"Repo '{repo.name}' has {len(branches)} branches, only scanning first {max_branch_count}. You can increase this limit\r\n"
-        )
-        branches = branches[0 : max_branch_count - 1]
 
     for branch in branches:
         for function in functions:
