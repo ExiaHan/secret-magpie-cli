@@ -65,7 +65,7 @@ def get_branches(
                 continue  # skip this branch
         if threshold_date != None:
             branches_t = [(b, v) for b, v in branches_t if v >= threshold_date]
-        if len(branches) > max_branch_count:
+        if len(branches_t) > max_branch_count:
             print(
                 f"Repo '{repo_name}' has {len(branches)} branches, only scanning the freshest {max_branch_count}. You can increase this limit"
             )
