@@ -38,8 +38,7 @@ def get_branches(
 
     if single_branch:
         branches = ["HEAD"]
-
-    if not single_branch:
+    else:
         if len(r.remotes) > 0:
             branches.extend(
                 [

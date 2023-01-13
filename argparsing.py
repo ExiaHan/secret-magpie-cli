@@ -126,7 +126,7 @@ parser.add_argument(
 
 parser.add_argument(
     "--max-branch-count",
-    action="store_true",
+    type=int,
     default=20,
     help="Limit the number of branches scanned per repo",
 )
