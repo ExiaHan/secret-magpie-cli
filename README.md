@@ -118,6 +118,19 @@ python main.py filesystem --path <path to repos>
 ```
 usage: 
  main.py {bitbucket/github/gitlab/azuredevops/filesystem} [options] 
+
+positional arguments:
+  {github,gitlab,bitbucket,azuredevops,filesystem}
+
+options:
+  -h, --help            show this help message and exit
+  --out OUT             Output file (default: results)
+  --no-cleanup          Don't remove checked-out repositories upon completion
+  --out-format {csv,json}
+  --parallel-repos PARALLEL_REPOS
+                        Number of repos to process in parallel - more than 3 not advised (default: 3)
+  --disable-trufflehog  Scan without trufflehog
+  --disable-gitleaks    Scan without gitleaks
   --single-branch       Scan only the default branch
   --max-branch-count MAX_BRANCH_COUNT
                         Limit the number of branches scanned per repo
@@ -125,10 +138,8 @@ usage:
   --extra-context       Output two lines before and after the secret for additional context.
   --no-stats            Do not output stats summary
   --ignore-branches-older-than IGNORE_BRANCHES_OLDER_THAN
-                        Ignore branches whose last commit date is before this value. Format is Pythons's expected ISO format e.g.
-                        2020-01-01T00:00:00+00:00
-  --update-ca-store     If you're running secret-magpie-cli within Docker and need to provide an external CA certificate to trust, pass     
-                        this option to cause it to update the container's certificate store.
+                        Ignore branches whose last commit date is before this value. Format is Pythons's expected ISO format e.g. 2020-01-01T00:00:00+00:00
+  --update-ca-store     If you're running secret-magpie-cli within Docker and need to provide an external CA certificate to trust, pass this option to cause it to update the container's certificate store.
   --dont-validate-https
                         Disables HTTPS validation for APIs/cloning.
 
@@ -149,6 +160,5 @@ bitbucket:
   --password PASSWORD
 
 filesystem:
-  --path PATH           The root directory that contains all of the repositories to scan. Each repository should be a subdirectory under    
-                        this path.
+  --path PATH           The root directory that contains all of the repositories to scan. Each repository should be a subdirectory under this path.
 ```
