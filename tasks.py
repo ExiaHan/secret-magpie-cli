@@ -53,14 +53,16 @@ def get_branches(path, threshold_date=None, single_branch=False):
                 if head.is_detached == True and not head.is_remote()
             ]
         )
-
     if threshold_date != None:
-        branches = list(
-            filter(
-                lambda branch: r.commit(branch).committed_date >= threshold_date,
-                branches,
-            )
-        )
+        all_branches = branches
+        branches = []
+        for branch in all_branches:
+            try:
+                latest_commit = r.commit(branch)
+                if latest_commit.committed_date >= threshold_date:
+                    branches.append(branch)
+            except:
+                continue  # skip this branch
 
     return branches
 
