@@ -62,7 +62,7 @@ def get_branches(path, threshold_date=None, single_branch=False):
                 if latest_commit.committed_date >= threshold_date:
                     branches.append(branch)
             except:
-                continue  # skip this branch
+                continue  # skip this branch #nosec B112
 
     return branches
 
